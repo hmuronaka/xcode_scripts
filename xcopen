@@ -66,7 +66,7 @@ def use_first_path_if_same_dir(paths)
 end
 
 def ask_project_path(project_paths)
-  puts "Multiplee of #{PARAMS[:project_name]} is found."
+  puts "Multiple #{PARAMS[:project_name]} is found."
 
   project_paths.each_with_index do |path, index|
     puts "#{index}: #{path}"
