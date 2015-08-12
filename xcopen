@@ -4,6 +4,8 @@ require 'pathname'
 
 PARAMS = {
   project_name: "",
+  search_paths: ["~/src/plusadd/"],
+  exclude_paths: [".git", "Pods"]
 }
 
 def main
@@ -60,7 +62,13 @@ def find_project_paths(project_name)
   else
     condition_of_find = "-name #{project_name}"
   end
-  paths_str = `find . #{condition_of_find} -type d`
+
+  exclude_conditions = []
+  PARAMS[:exclude_paths].each do |path|
+    exclude_conditions << " -not -path \"#{path}\" "
+  end
+
+  paths_str = `find #{PARAMS[:search_paths][0]} #{condition_of_find} -type d #{exclude_conditions.join}`
 
   paths = paths_str.split("\n")
 
