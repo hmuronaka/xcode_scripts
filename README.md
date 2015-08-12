@@ -7,5 +7,5 @@ xcopen: open xcode project.
 cd ~/src
 xcopen SampleProject # xcopen search a xcworkspace or xcproject directory recursively
 
-xcopen SampleProject.xcworkspace # can specific xcworkspace or xcproject.
+xcopen SampleProject.xcworkspace # open specific xcworkspace or xcproject.
 ```
