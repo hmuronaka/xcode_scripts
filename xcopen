@@ -1,0 +1,20 @@
+#!/bin/sh
+
+BASE_PATH=.
+PROJECT_NAME=$1
+
+case "$PROJECT_NAME" in 
+  *\.xcworkspace) 
+PROJECT_DIR="${PROJECT_NAME}"
+;;
+  *\.xcodeproj)
+PROJECT_DIR="${PROJECT_NAME}"
+;;
+  *)
+PROJECT_DIR="${PROJECT_NAME}".xcworkspace
+;;
+esac
+
+PROJECT_PATH=`find ${BASE_PATH} -name "${PROJECT_DIR}" -type d`
+
+open "${PROJECT_PATH}"
