@@ -1,6 +1,9 @@
 #!/usr/bin/ruby
+#
+$:.unshift File.dirname(__FILE__)
 
 require 'pathname'
+require 'xc_script.rb'
 
 PARAMS = {
   project_name: "",
@@ -11,23 +14,15 @@ PARAMS = {
 def main
   exit(1) unless parse_args(ARGV)
 
-  project_paths = []
-#  find_project_path_recursively(project_paths, "./", PARAMS[:project_name])
-  project_paths = find_project_paths(PARAMS[:project_name])
+  project_path = resolve_project_path(
+    PARAMS[:project_name],
+    PARAMS[:search_paths],
+    PARAMS[:exclude_paths])
 
-  if project_paths.empty?
-    puts "#{PARAMS[:project_name]} is not found!!"
-    return
-  end
+  exit(1) if project_path.empty?
 
-  project_path = ""
-  if project_paths.length == 1
-    project_path = project_paths[0]
-  else
-    project_path = ask_project_path(project_paths)
-  end
-  
   open_xcode(project_path)
+
 end
 
 def parse_args(argv)
@@ -50,68 +45,112 @@ def usage(error_sym)
   end
 end
 
-def find_project_paths(project_name)
-
-  condition_of_find = ""
-  if File.extname(project_name).empty?
-    conditions = []
-    [".xcworkspace", ".xcodeproj"].each do |ext|
-      conditions << " -name #{project_name}#{ext} "
-    end
-    condition_of_find = "\\( #{conditions.join(' -or ')} \\)"
-  else
-    condition_of_find = "-name #{project_name}"
-  end
-
-  exclude_conditions = []
-  PARAMS[:exclude_paths].each do |path|
-    exclude_conditions << " -path \"#{path}\" -prune "
-  end
-
-  paths_str = `find #{PARAMS[:search_paths][0]} #{condition_of_find} -o #{exclude_conditions.join(' -o ')} -type d`
-
-  paths = paths_str.split("\n")
-
-  result = {}
-  paths.each do |path|
-    extname = File.extname(path)
-    basename = path.gsub(/#{extname}$/, "")
-    if extname == ".xcworkspace"
-      result[basename] = path
-    else
-      result[basename] ||= path
-    end
-  end
-
-  result.values
-end
-
-def ask_project_path(project_paths)
-  puts "Multiple #{PARAMS[:project_name]} is found."
-
-  project_paths.each_with_index do |path, index|
-    puts "#{index}: #{path}"
-  end
-  print "select path >" 
-
-  selected_index = -1
-  while str = STDIN.gets
-    exit(0) if str.chomp.downcase == "q"
-
-    selected_index = str.to_i
-    if selected_index >= 0 && selected_index < project_paths.length
-      break
-    end
-    print "select path >" 
-  end
-
-  project_paths[selected_index]
-end
-
-def open_xcode(project_path)
-  `open #{project_path}`
-end
-
 main
 
-
+# def main
+#   exit(1) unless parse_args(ARGV)
+#
+#   project_paths = []
+# #  find_project_path_recursively(project_paths, "./", PARAMS[:project_name])
+#   project_paths = find_project_paths(PARAMS[:project_name])
+#
+#   if project_paths.empty?
+#     puts "#{PARAMS[:project_name]} is not found!!"
+#     return
+#   end
+#
+#   project_path = ""
+#   if project_paths.length == 1
+#     project_path = project_paths[0]
+#   else
+#     project_path = ask_project_path(project_paths)
+#   end
+#   
+#   open_xcode(project_path)
+# end
+#
+# def parse_args(argv)
+#   if argv.length == 0
+#     usage(:illegal_arguments)
+#     return false
+#   end
+#
+#   PARAMS[:project_name] = argv[0]
+#   return true
+# end
+#
+# def usage(error_sym)
+#   case error_sym
+#   when :illegal_arguments
+#     puts "Usage: xcopen <projectname>"
+#     puts ""
+#     puts "Options:"
+#     puts "\tprojectname: xcode project name or project name with extension. like MyProject, MyProject.xcworkspace"
+#   end
+# end
+#
+# def find_project_paths(project_name)
+#
+#   condition_of_find = ""
+#   if File.extname(project_name).empty?
+#     conditions = []
+#     [".xcworkspace", ".xcodeproj"].each do |ext|
+#       conditions << " -name #{project_name}#{ext} "
+#     end
+#     condition_of_find = "\\( #{conditions.join(' -or ')} \\)"
+#   else
+#     condition_of_find = "-name #{project_name}"
+#   end
+#
+#   exclude_conditions = []
+#   PARAMS[:exclude_paths].each do |path|
+#     exclude_conditions << " -path \"#{path}\" -prune "
+#   end
+#
+#   paths_str = `find #{PARAMS[:search_paths][0]} #{condition_of_find} -o #{exclude_conditions.join(' -o ')} -type d`
+#
+#   paths = paths_str.split("\n")
+#
+#   result = {}
+#   paths.each do |path|
+#     extname = File.extname(path)
+#     basename = path.gsub(/#{extname}$/, "")
+#     if extname == ".xcworkspace"
+#       result[basename] = path
+#     else
+#       result[basename] ||= path
+#     end
+#   end
+#
+#   result.values
+# end
+#
+# def ask_project_path(project_paths)
+#   puts "Multiple #{PARAMS[:project_name]} is found."
+#
+#   project_paths.each_with_index do |path, index|
+#     puts "#{index}: #{path}"
+#   end
+#   print "select path >" 
+#
+#   selected_index = -1
+#   while str = STDIN.gets
+#     exit(0) if str.chomp.downcase == "q"
+#
+#     selected_index = str.to_i
+#     if selected_index >= 0 && selected_index < project_paths.length
+#       break
+#     end
+#     print "select path >" 
+#   end
+#
+#   project_paths[selected_index]
+# end
+#
+# def open_xcode(project_path)
+#   `open #{project_path}`
+# end
+#
+# main
+#
+#
