@@ -17,3 +17,11 @@ xcopen TestProject
 1: temp/testproject/TestProject.xcworkspace
 select path > 
 ```
+
+## xccd
+
+change directory of xcode project.
+
+```sh
+. xccd SampleProject # use pushd, not cd
+```
