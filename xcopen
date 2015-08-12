@@ -65,10 +65,10 @@ def find_project_paths(project_name)
 
   exclude_conditions = []
   PARAMS[:exclude_paths].each do |path|
-    exclude_conditions << " -not -path \"#{path}\" "
+    exclude_conditions << " -path \"#{path}\" -prune "
   end
 
-  paths_str = `find #{PARAMS[:search_paths][0]} #{condition_of_find} -type d #{exclude_conditions.join}`
+  paths_str = `find #{PARAMS[:search_paths][0]} #{condition_of_find} -o #{exclude_conditions.join(' -o ')} -type d`
 
   paths = paths_str.split("\n")
 
