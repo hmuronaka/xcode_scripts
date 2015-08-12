@@ -1,23 +1,17 @@
 #!/usr/bin/ruby
 
 require 'pathname'
-require 'benchmark'
 
 PARAMS = {
   project_name: "",
-  find_ignore_dirs: [".", "..", ".git", "Pods"]
 }
 
 def main
   exit(1) unless parse_args(ARGV)
 
   project_paths = []
-  result = Benchmark.realtime do 
-    find_project_path_recursively_slow(project_paths, "./", PARAMS[:project_name])
-  end
-
-  puts result
-    #find_project_path(PARAMS[:project_name])
+#  find_project_path_recursively(project_paths, "./", PARAMS[:project_name])
+  project_paths = find_project_paths(PARAMS[:project_name])
 
   if project_paths.empty?
     puts "#{PARAMS[:project_name]} is not found!!"
@@ -54,102 +48,33 @@ def usage(error_sym)
   end
 end
 
-def find_project_path(project_dir)
-  search_path_pattern = project_dir
-  if File.extname(search_path_pattern).empty?
-    search_path_pattern = "#{project_dir}\.{xcworkspace,xcodeproj}"
-  end
-  paths = Dir.glob("**/#{search_path_pattern}")
-  paths = use_first_path_if_same_dir(paths)
-end
+def find_project_paths(project_name)
 
-def find_project_path_recursively_slow(found_project_dirs, target_dir, project_name)
-
-  dir_entries = Dir.entries(target_dir)
-  dir_entries.delete_if do |item|
-    item == "." || item == ".." || item == ".git" || item == "Pods"
-  end
-
-  dir_entries = dir_entries.map do |item|
-    (Pathname(target_dir) + item).to_s
-  end
-
-  child_dirs = dir_entries.select do |item|
-    File.directory?(item)
-  end
-
-  project_path = nil
-  dir_entries.each do |item|
-    extname = File.extname(item)
-    basename = File.basename(item, extname)
-    if basename == project_name
-      if extname == ".xcworkspace"
-        project_path = item
-        break
-      elsif extname == ".xcodeproj"
-        project_path = item
-      end
+  condition_of_find = ""
+  if File.extname(project_name).empty?
+    conditions = []
+    [".xcworkspace", ".xcodeproj"].each do |ext|
+      conditions << " -name #{project_name}#{ext} "
     end
+    condition_of_find = "\\( #{conditions.join(' -or ')} \\)"
+  else
+    condition_of_find = "-name #{project_name}"
   end
+  paths_str = `find . #{condition_of_find} -type d`
 
-  if project_path
-    found_project_dirs << project_path
-    return
-  end
+  paths = paths_str.split("\n")
 
-  child_dirs.each do |child_dir|
-    find_project_path_recursively_slow(found_project_dirs, child_dir, project_name)
-  end
-end
-
-def find_project_path_recursively(found_project_dirs, target_dir, project_name)
-
-  child_dirs = []
-  project_path = nil
-  ignore_dirs = PARAMS[:find_ignore_dirs]
-
-  Dir.foreach(target_dir) do |file|
-    next if ignore_dirs.include?(file)
-
-    current_path = (Pathname(target_dir) + file).to_s
-    if File.directory?(current_path)
-      extname = File.extname(file)
-      basename = File.basename(file, extname)
-      if basename == project_name
-        if extname == ".xcworkspace"
-          project_path = current_path
-          break
-        elsif extname == ".xcodeproj"
-          project_path = current_path
-        end
-      else
-        child_dirs << current_path
-      end
-    end
-  end
-
-  if project_path
-    found_project_dirs << project_path
-    return
-  end
-
-  child_dirs.each do |child_dir|
-    find_project_path_recursively(found_project_dirs, child_dir, project_name)
-  end
-end
-
-
-
-def use_first_path_if_same_dir(paths)
   result = {}
-  paths.each do|path|
+  paths.each do |path|
     extname = File.extname(path)
-    removed_extname_path = path.gsub(/#{extname}$/, "")
-
-    unless result.has_key?(removed_extname_path)
-      result[removed_extname_path] = path
+    basename = path.gsub(/#{extname}$/, "")
+    if extname == ".xcworkspace"
+      result[basename] = path
+    else
+      result[basename] ||= path
     end
   end
+
   result.values
 end
 
