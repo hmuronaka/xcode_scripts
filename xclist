@@ -40,7 +40,7 @@ def usage(error_sym)
 end
 
 def puts_project_names(project_names)
-  puts project_names.join("\n")
+  puts project_names.join(" ")
 end
 
 main

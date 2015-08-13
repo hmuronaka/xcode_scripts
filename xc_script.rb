@@ -86,7 +86,7 @@ end
 def list_project_names(dir, ignore_files)
 
   project_names = []
-  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], 3)
+  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], 4)
 
   project_names
 end
