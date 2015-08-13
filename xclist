@@ -1,0 +1,46 @@
+#!/usr/bin/ruby
+#
+$:.unshift File.dirname(__FILE__)
+
+require 'pathname'
+require 'xc_script.rb'
+
+PARAMS = {
+  search_path: "",
+  exclude_paths: [".git", "Pods"]
+}
+
+def main
+  exit(1) unless parse_args(ARGV)
+
+  project_names = list_project_names(
+    PARAMS[:search_path],
+    PARAMS[:exclude_paths])
+
+  exit(1) if project_names.empty?
+
+  puts_project_names(project_names)
+end
+
+def parse_args(argv)
+  if argv.length == 0
+    usage(:illegal_arguments)
+    return false
+  end
+
+  PARAMS[:search_path] = argv[0]
+  return true
+end
+
+def usage(error_sym)
+  case error_sym
+  when :illegal_arguments
+    puts "Usage: xclist <search-path>"
+  end
+end
+
+def puts_project_names(project_names)
+  puts project_names.join("\n")
+end
+
+main

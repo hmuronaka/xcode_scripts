@@ -83,4 +83,42 @@ def open_xcode(project_path)
   `open #{project_path}`
 end
 
+def list_project_names(dir, ignore_files)
 
+  project_names = []
+  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], 3)
+
+  project_names
+end
+
+def list_project_names_recursively(project_names, dir, ignore_files, depth)
+  if depth == 0
+    return 
+  end
+
+  child_dirs = []
+
+  project_name = ""
+
+  Dir.foreach(dir) do |file|
+    next if ignore_files.include?(file)
+
+    extname = File.extname(file)
+    if extname == ".xcworkspace" or extname == ".xcodeproj"
+      project_name = File.basename(file, extname)
+    else
+      current_path = (Pathname(dir) + file).to_s
+      if File.directory?(current_path)
+        child_dirs << current_path
+      end
+    end
+  end
+
+  if project_name.empty?
+    child_dirs.each do |dir|
+      list_project_names_recursively(project_names, dir, ignore_files, depth - 1)
+    end
+  else
+    project_names << project_name
+  end
+end
