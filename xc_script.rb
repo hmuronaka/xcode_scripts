@@ -83,10 +83,10 @@ def open_xcode(project_path)
   `open #{project_path}`
 end
 
-def list_project_names(dir, ignore_files)
+def list_project_names(dir, ignore_files, depth)
 
   project_names = []
-  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], 4)
+  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], depth)
 
   project_names
 end

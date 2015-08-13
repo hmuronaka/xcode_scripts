@@ -7,6 +7,7 @@ require 'xc_script.rb'
 
 PARAMS = {
   search_path: "",
+  depth: 4,
   exclude_paths: [".git", "Pods"]
 }
 
@@ -15,7 +16,9 @@ def main
 
   project_names = list_project_names(
     PARAMS[:search_path],
-    PARAMS[:exclude_paths])
+    PARAMS[:exclude_paths],
+    PARAMS[:depth]
+  )
 
   exit(1) if project_names.empty?
 
@@ -35,12 +38,15 @@ end
 def usage(error_sym)
   case error_sym
   when :illegal_arguments
-    puts "Usage: xclist <search-path>"
+    puts "Usage: xclist <search-path> <depth>"
+    puts ""
+    puts "Option:"
+    puts "\tdepth:depth of directory-search-recursively. default is #{PARAMS[:depth]}"
   end
 end
 
 def puts_project_names(project_names)
-  puts project_names.join(" ")
+  puts project_names.join("\n")
 end
 
 main
