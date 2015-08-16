@@ -3,7 +3,7 @@
 $:.unshift File.dirname(__FILE__)
 
 require 'pathname'
-require 'xc_script.rb'
+require_relative 'lib/xc_script.rb'
 
 PARAMS = {
   search_path: "",
