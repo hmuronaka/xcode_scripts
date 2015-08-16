@@ -3,7 +3,7 @@
 $:.unshift File.dirname(__FILE__)
 
 require 'pathname'
-require_relative 'lib/xc_script'
+require_relative '../lib/xc_script'
 
 PARAMS = {
   project_name: "",

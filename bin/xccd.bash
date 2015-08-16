@@ -1,7 +1,9 @@
 #!/bin/sh
 
+LIB_DIR=../lib
+
 xccd() {
-  PROJECT_PATH=`xccd.rb $1 | sed -n '$p'`
+  PROJECT_PATH=`${LIB_DIR}/xccd.rb $1 | sed -n '$p'`
   pushd ${PROJECT_PATH}
 }
 
