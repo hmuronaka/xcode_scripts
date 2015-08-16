@@ -2,11 +2,11 @@
 #
 $:.unshift File.dirname(__FILE__)
 
-require 'xc_script.rb'
+require_relative 'lib/xc_script.rb'
 
 PARAMS = {
   project_name: "",
-  search_paths: ["~/src/plusadd/"],
+  search_paths: ["."],
   exclude_paths: [".git", "Pods"]
 }
 

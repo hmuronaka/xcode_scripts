@@ -1,13 +1,13 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 #
 $:.unshift File.dirname(__FILE__)
 
 require 'pathname'
-require 'xc_script.rb'
+require_relative 'lib/xc_script'
 
 PARAMS = {
   project_name: "",
-  search_paths: ["~/src/plusadd/"],
+  search_paths: ["."],
   exclude_paths: [".git", "Pods"]
 }
 
