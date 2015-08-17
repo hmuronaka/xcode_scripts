@@ -23,5 +23,11 @@ select path >
 change directory of xcode project.
 
 ```sh
-. xccd SampleProject # use pushd, not cd
+xccd SampleProject # use pushd
 ```
+
+# Install
+
+git clone this repository
+chmod +x install.sh
+./install.sh
