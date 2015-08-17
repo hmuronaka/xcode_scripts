@@ -2,7 +2,7 @@
 #
 $:.unshift File.dirname(__FILE__)
 
-require_relative 'lib/xc_script.rb'
+require_relative './xc_script.rb'
 
 PARAMS = {
   project_name: "",

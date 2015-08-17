@@ -2,34 +2,37 @@
 
 CURRENT_DIR=`pwd`
 BIN_DIR=${CURRENT_DIR}/bin
+INSTALL_DIR=~/.xcode_scripts
 
-usage() {
-  echo "install.sh <install-dir-path>"
-  echo ""
-  echo "Option:"
-  echo "\tinstall-dir-path: input a path, like ~/bin/." 
+make_dir() {
+  DIRPATH=$1
+  if [ ! -d $DIRPATH ]; then
+    mkdir -p $DIRPATH
+    if [ $? -ne 0 ]; then
+      echo "cannot make a directory."
+      exit 1
+    fi
+  fi
 }
 
-if [ $# -ne 1 ]; then
-  usage
-  exit 1
-fi
-
-INSTALL_DIR=$1
-
-if [ ! -d $INSTALL_DIR ]; then
-  mkdir -p $INSTALL_DIR
-  if [ $? -ne 0 ]; then
-    echo "cannot make a directory."
-    exit 1
-  fi
-fi
+make_dir $INSTALL_DIR
+make_dir $INSTALL_DIR/bin
+make_dir $INSTALL_DIR/lib
 
 cd $INSTALL_DIR
 
-for f in xcopen xclist xccd.rb; do
-  ln -s ${BIN_DIR}/${f} ${f}
+for f in xcode_script.bash; do
+  cp ${CURRENT_DIR}/${f} ${INSTALL_DIR}/
+done
+
+for f in xcopen xclist; do
+  cp ${CURRENT_DIR}/bin/${f} ${INSTALL_DIR}/bin/
+done
+
+for f in xc_script.rb xccd.rb; do
+  cp ${CURRENT_DIR}/lib/${f} ${INSTALL_DIR}/lib/
 done
 
 echo "Completed!"
-echo "Please add ${INSTALL_DIR} to PATH environment variable!"
+echo "Please manually add follow line to .bash_profile"
+echo "  source ${INSTALL_DIR}/xcode_script.bash"
