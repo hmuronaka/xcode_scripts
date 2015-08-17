@@ -10,7 +10,7 @@ usage() {
   echo "\tinstall-dir-path: input a path, like ~/bin/." 
 }
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
   usage
   exit 1
 fi
