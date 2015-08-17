@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
+require 'yaml'
 
-def resolve_project_path(project_name, search_paths, exclude_paths)
+CONFIG_PATH=File.expand_path("../../config", __FILE__)
 
-  project_paths = find_project_paths(project_name, search_paths, exclude_paths)
+def resolve_project_path(project_name, search_paths, exclude_paths, search_depth)
+
+  project_paths = find_project_paths(project_name, search_paths, exclude_paths, search_depth)
 
   if project_paths.empty?
     STDERR.puts "#{project_name} is not found!!"
@@ -21,7 +24,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths)
   project_path
 end
 
-def find_project_paths(project_name, search_paths, exclude_paths)
+def find_project_paths(project_name, search_paths, exclude_paths, search_depth)
 
   condition_of_find = ""
   if File.extname(project_name).empty?
@@ -39,7 +42,7 @@ def find_project_paths(project_name, search_paths, exclude_paths)
     exclude_conditions << " -path \"#{path}\" -prune "
   end
 
-  paths_str = `find #{search_paths[0]} #{condition_of_find} -o #{exclude_conditions.join(' -o ')} -type d`
+  paths_str = `find #{search_paths[0]} #{condition_of_find} -o #{exclude_conditions.join(' -o ')} -type d -depth #{search_depth}`
 
   paths = paths_str.split("\n")
 
@@ -121,4 +124,29 @@ def list_project_names_recursively(project_names, dir, ignore_files, depth)
   else
     project_names << project_name
   end
+end
+
+def load_config
+  load_config_with_path(CONFIG_PATH)
+end
+
+def load_config_with_path(yaml_path)
+  config = {}
+  begin
+    str = File.read(yaml_path)
+    config = YAML.load(str)
+  rescue => e
+  end
+
+  if config[:search_paths].nil?
+    config[:search_paths] = ["."]
+  end
+  if config[:search_depth].nil?
+    config[:search_depth] = 4
+  end
+  if config[:exclude_paths].nil?
+    config[:exclude_paths] = [".git", "Pods"]
+  end
+
+  config
 end

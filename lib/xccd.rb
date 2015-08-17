@@ -4,30 +4,28 @@ $:.unshift File.dirname(__FILE__)
 
 require_relative './xc_script.rb'
 
-PARAMS = {
-  project_name: "",
-  search_paths: ["."],
-  exclude_paths: [".git", "Pods"]
-}
-
 def main
-  exit(1) unless parse_args(ARGV)
+  config = load_config
+
+  exit(1) unless parse_args(ARGV, config)
 
   project_path = resolve_project_path(
-    PARAMS[:project_name],
-    PARAMS[:search_paths],
-    PARAMS[:exclude_paths])
+    config[:project_name],
+    config[:search_paths],
+    config[:exclude_paths],
+    config[:search_depth]
+  )
 
   change_dir(Pathname(project_path).parent)
 end
 
-def parse_args(argv)
+def parse_args(argv, config)
   if argv.length == 0
     usage(:illegal_arguments)
     return false
   end
 
-  PARAMS[:project_name] = argv[0]
+  config[:project_name] = argv[0]
   return true
 end
 
