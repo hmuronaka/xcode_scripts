@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
+$:.unshift File.dirname(__FILE__)
+
 require 'pathname'
 require 'yaml'
+require_relative '../lib/xc_history'
 
 CONFIG_PATH=File.expand_path("../../config", __FILE__)
 

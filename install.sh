@@ -29,7 +29,7 @@ for f in xcopen xclist; do
   cp ${CURRENT_DIR}/bin/${f} ${INSTALL_DIR}/bin/
 done
 
-for f in xc_script.rb xccd.rb; do
+for f in xc_script.rb xccd.rb xc_history.rb; do
   cp ${CURRENT_DIR}/lib/${f} ${INSTALL_DIR}/lib/
 done
 

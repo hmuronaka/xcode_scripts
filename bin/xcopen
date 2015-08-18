@@ -4,6 +4,7 @@ $:.unshift File.dirname(__FILE__)
 
 require 'pathname'
 require_relative '../lib/xc_script'
+require_relative '../lib/xc_history'
 
 def main
   config = load_config
@@ -19,6 +20,12 @@ def main
   exit(1) if project_path.empty?
 
   open_xcode(project_path)
+
+  if $? == 0
+    record_history(
+      config[:project_name], 
+      project_path)
+  end
 end
 
 def parse_args(argv, config)
