@@ -49,3 +49,25 @@ def remove_duplicated_project(histories, from_index, history)
   end
   result
 end
+
+def ask_open_project_from_histories
+  histories = load_or_create_histories(HISTORY_FILE)
+
+  histories.each_with_index do |item, index|
+    STDERR.puts "#{index} #{item[:project_name]}:#{item[:path]}"
+  end
+  STDERR.print "input index > "
+
+  selected_index = -1
+  while str = STDIN.gets
+    exit(0) if str.chomp.downcase == "q"
+
+    selected_index = str.to_i
+    if selected_index >= 0 && selected_index < histories.size
+      break
+    end
+    STDERR.print "input index >" 
+  end
+
+  histories[selected_index]
+end
