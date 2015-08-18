@@ -15,7 +15,7 @@ def record_history(project_name, path)
   histories.insert(0, history)
 
   if histories.size > 1
-    histories = remove_duplicate_project(histories, 1, history)
+    histories = remove_duplicated_project(histories, 1, history)
   end
 
   save_history(histories, HISTORY_FILE)
@@ -38,10 +38,14 @@ def save_history(history, history_path)
   end
 end
 
-def remove_duplicate_project(histories, from_index, history)
-  histories = histories.each_with_index.select do |item, index| 
-    index < from_index || 
-    history[:project_name] != item[:project_name] && history[:path] != item[:path]
+def remove_duplicated_project(histories, from_index, history)
+  result = []
+  histories.each_with_index do |item, index| 
+    puts "#{item}"
+    if index < from_index || 
+      (history[:project_name] != item[:project_name] && history[:path] != item[:path])
+      result << item
+    end
   end
-  histories
+  result
 end
