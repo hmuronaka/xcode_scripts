@@ -1,7 +1,7 @@
 # Scripts for Xcode.
 
 ## xcopen
-open xcode project.
+open xcode project easily.
 
 ```sh
 # SampleProject is in ~/src/xcode_projects/sampleproject/SampleProject.xcworkspace
@@ -16,6 +16,12 @@ xcopen TestProject
 0: xcode_projects/testproject/TestProject.xcworkspace
 1: temp/testproject/TestProject.xcworkspace
 select path > 
+
+xcopen
+choose a project from histories
+0: TestProject: ~/xcode_projects/testproject/TestProject.xcworkspace
+1: SampleProject: ~/xcode_projects/testproject/SampleProject.xcworkspace
+select project >
 ```
 
 ## xccd

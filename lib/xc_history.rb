@@ -41,7 +41,6 @@ end
 def remove_duplicated_project(histories, from_index, history)
   result = []
   histories.each_with_index do |item, index| 
-    puts "#{item}"
     if index < from_index || 
       (history[:project_name] != item[:project_name] && history[:path] != item[:path])
       result << item
@@ -54,9 +53,11 @@ def ask_open_project_from_histories
   histories = load_or_create_histories(HISTORY_FILE)
 
   histories.each_with_index do |item, index|
-    STDERR.puts "#{index} #{item[:project_name]}:#{item[:path]}"
+    STDERR.puts "#{index}: #{item[:project_name]}:#{item[:path]}"
   end
-  STDERR.print "input index > "
+
+  input_message = "select a project > "
+  STDERR.print input_message
 
   selected_index = -1
   while str = STDIN.gets
@@ -66,7 +67,7 @@ def ask_open_project_from_histories
     if selected_index >= 0 && selected_index < histories.size
       break
     end
-    STDERR.print "input index >" 
+    STDERR.print input_message
   end
 
   histories[selected_index]
