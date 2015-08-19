@@ -24,7 +24,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
     project_path = ask_project_path(project_name, project_paths)
   end
 
-  project_path
+  File.expand_path(project_path, search_paths[0])
 end
 
 def find_project_paths(project_name, search_paths, exclude_paths, search_depth)
