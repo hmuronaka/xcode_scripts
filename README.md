@@ -1,7 +1,7 @@
 # Scripts for Xcode.
 
 ## xcopen
-open xcode project easily.
+open a xcode project easily.
 
 ```sh
 # SampleProject is in ~/src/xcode_projects/sampleproject/SampleProject.xcworkspace
