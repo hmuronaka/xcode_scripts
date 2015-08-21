@@ -4,35 +4,56 @@ $:.unshift File.dirname(__FILE__)
 
 require 'pathname'
 require_relative '../lib/xc_script'
-
-PARAMS = {
-  project_name: "",
-  search_paths: ["."],
-  exclude_paths: [".git", "Pods"]
-}
+require_relative '../lib/xc_history'
 
 def main
-  exit(1) unless parse_args(ARGV)
+  config = load_config
 
-  project_path = resolve_project_path(
-    PARAMS[:project_name],
-    PARAMS[:search_paths],
-    PARAMS[:exclude_paths])
+  exit(1) unless parse_args(ARGV, config)
+
+
+  project_path = ""
+  project_name = ""
+  if config[:project_name].nil?
+    STDERR.puts "choose a project from history."
+    history = ask_open_project_from_histories
+    project_path = history[:path]
+    project_name = history[:project_name]
+  else
+    project_path = resolve_project_path(
+      config[:project_name],
+      config[:search_paths],
+      config[:exclude_paths],
+      config[:search_depth])
+    project_name = config[:project_name]
+  end
 
   exit(1) if project_path.empty?
 
   open_xcode(project_path)
 
+  if $? == 0
+    if project_name != "."
+      record_history(
+        project_name, 
+        project_path,
+        config[:history_num]
+      )
+    end
+  end
 end
 
-def parse_args(argv)
+def parse_args(argv, config)
   if argv.length == 0
+    config[:project_name] = nil
+    return true
+  elsif argv.length == 1
+    config[:project_name] = argv[0]
+    return true
+  else
     usage(:illegal_arguments)
     return false
   end
-
-  PARAMS[:project_name] = argv[0]
-  return true
 end
 
 def usage(error_sym)
