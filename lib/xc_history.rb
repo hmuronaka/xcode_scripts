@@ -49,11 +49,21 @@ def remove_duplicated_project(histories, from_index, history)
   result
 end
 
+def max_len_of_project_name(histories)
+  max_len_project = histories.max do |a,b|
+    a[:project_name].length <=> b[:project_name].length
+  end
+  max_len_project[:project_name].length
+end
+
 def ask_open_project_from_histories
   histories = load_or_create_histories(HISTORY_FILE)
 
+  max_len = max_len_of_project_name(histories)
+
+  format = "%2d: %#{max_len}s: %s\n"
   histories.each_with_index do |item, index|
-    STDERR.puts "#{index}: #{item[:project_name]}:#{item[:path]}"
+    STDERR.printf(format, index, item[:project_name], item[:path])
   end
 
   input_message = "select a project > "

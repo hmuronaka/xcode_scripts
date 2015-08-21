@@ -9,24 +9,43 @@ def main
 
   exit(1) unless parse_args(ARGV, config)
 
-  project_path = resolve_project_path(
-    config[:project_name],
-    config[:search_paths],
-    config[:exclude_paths],
-    config[:search_depth]
-  )
+  project_path = ""
+  project_name = ""
+  if config[:project_name].nil?
+    STDERR.puts "choose a project from history."
+    history = ask_open_project_from_histories
+    project_path = history[:path]
+    project_name = history[:project_name]
+  else
+    project_path = resolve_project_path(
+      config[:project_name],
+      config[:search_paths],
+      config[:exclude_paths],
+      config[:search_depth])
+    project_name = config[:project_name]
+  end
+
+  exit(1) if project_path.empty?
 
   change_dir(Pathname(project_path).parent)
+
+  record_history(
+    project_name,
+    project_path)
+
 end
 
 def parse_args(argv, config)
   if argv.length == 0
+    config[:project_name] = nil
+    return true
+  elsif argv.length == 1
+    config[:project_name] = argv[0]
+    return true
+  else
     usage(:illegal_arguments)
     return false
   end
-
-  config[:project_name] = argv[0]
-  return true
 end
 
 def usage(error_sym)
