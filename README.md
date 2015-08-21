@@ -17,7 +17,7 @@ xcopen TestProject
 1: temp/testproject/TestProject.xcworkspace
 select path > 
 
-xcopen # if xcopen isn't given any option, user can choose a project from histories.
+xcopen # if xcopen isn't given any project name, xcopen shows history of project name opened, then user can choose a project from history.
 0: TestProject: ~/xcode_projects/testproject/TestProject.xcworkspace
 1: SampleProject: ~/xcode_projects/testproject/SampleProject.xcworkspace
 select project >
@@ -31,6 +31,10 @@ change directory of xcode project.
 
 ```sh
 xccd SampleProject # move a dictionary of SampleProject. xccd use pushd, not cd. 
+
+xccd # if xccd isn't given project name, xccd shows history of project name opened, then user can choose a project from history. 
+ 0:   TestProject: ~/xcode_projects/testproject/TestProject.xcworkspace
+ 1: SampleProject: ~/xcode_projects/testproject/SampleProject.xcworkspace
 ```
 
 # Install
