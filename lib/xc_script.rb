@@ -18,7 +18,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
     return ""
   end
 
-  project_paths = find_project_paths(project_name, search_paths, exclude_paths, search_depth)
+  project_paths = find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
 
   if project_paths.empty?
     STDERR.puts "#{project_name} is not found!!"
@@ -33,6 +33,31 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
   end
 
   File.expand_path(project_path, search_paths[0])
+end
+
+def find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
+
+  projects = list_projects(search_paths[0], exclude_paths, search_depth) do |name, path|
+    project_name == name
+  end
+
+  STDERR.puts projects
+
+  result = {}
+  projects.each do |item|
+    path = item[:project_path]
+    extname = File.extname(path)
+    basename = path.gsub(/#{extname}$/, "")
+    STDERR.puts "extname=#{extname}, basename=#{basename}"
+    if extname == ".xcworkspace"
+      result[basename] = path
+    else
+      result[basename] ||= path
+    end
+  end
+
+  result.values
+
 end
 
 def find_project_paths(project_name, search_paths, exclude_paths, search_depth)
@@ -99,13 +124,24 @@ end
 
 def list_project_names(dir, ignore_files, depth)
 
-  project_names = []
-  list_project_names_recursively(project_names, dir, ignore_files + [".", ".."], depth)
+  project_paths = list_projects(dir, ignore_files, depth) do 
 
+  end
+  project_names = project_paths.map do |item|
+    item[:project_name]
+  end
   project_names
 end
 
-def list_project_names_recursively(project_names, dir, ignore_files, depth)
+def list_projects(dir, ignore_files, depth)
+
+  project_paths = []
+  list_projects_recursively(project_paths, dir, ignore_files + [".", ".."], depth, block)
+
+  project_paths
+end
+
+def list_projects_recursively(project_paths, dir, ignore_files, depth, &block)
   if depth == 0
     return 
   end
@@ -113,15 +149,24 @@ def list_project_names_recursively(project_names, dir, ignore_files, depth)
   child_dirs = []
 
   project_name = ""
-
+  project_path = ""
   Dir.foreach(dir) do |file|
     next if ignore_files.include?(file)
 
+    current_path = (Pathname(dir) + file).to_s
     extname = File.extname(file)
     if extname == ".xcworkspace" or extname == ".xcodeproj"
-      project_name = File.basename(file, extname)
+
+      removed = false
+      if block
+        removed = block.call(project_name, project_path)
+      end
+      
+      if not removed
+        project_name = File.basename(file, extname)
+        project_path = current_path
+      end
     else
-      current_path = (Pathname(dir) + file).to_s
       if File.directory?(current_path)
         child_dirs << current_path
       end
@@ -130,10 +175,13 @@ def list_project_names_recursively(project_names, dir, ignore_files, depth)
 
   if project_name.empty?
     child_dirs.each do |dir|
-      list_project_names_recursively(project_names, dir, ignore_files, depth - 1)
+      list_projects_recursively(project_paths, dir, ignore_files, depth - 1)
     end
   else
-    project_names << project_name
+    project_paths << {
+      project_name: project_name,
+      project_path: project_path
+    }
   end
 end
 
