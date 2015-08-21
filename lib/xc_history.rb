@@ -5,7 +5,7 @@ require 'yaml'
 
 HISTORY_FILE = File.expand_path('~/.xc_history')
 
-def record_history(project_name, path)
+def record_history(project_name, path, history_num)
   histories = load_or_create_histories(HISTORY_FILE)
 
   history = {
@@ -17,6 +17,8 @@ def record_history(project_name, path)
   if histories.size > 1
     histories = remove_duplicated_project(histories, 1, history)
   end
+
+  histories = histories.take(history_num)
 
   save_history(histories, HISTORY_FILE)
 end

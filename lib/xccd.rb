@@ -29,9 +29,13 @@ def main
 
   change_dir(Pathname(project_path).parent)
 
-  record_history(
-    project_name,
-    project_path)
+  if project_name != "."
+    record_history(
+      project_name,
+      project_path,
+      config[:history_num]
+    )
+  end
 
 end
 

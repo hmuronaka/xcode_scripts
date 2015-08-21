@@ -33,9 +33,13 @@ def main
   open_xcode(project_path)
 
   if $? == 0
-    record_history(
-      project_name, 
-      project_path)
+    if project_name != "."
+      record_history(
+        project_name, 
+        project_path,
+        config[:history_num]
+      )
+    end
   end
 end
 

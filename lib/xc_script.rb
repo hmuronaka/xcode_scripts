@@ -158,6 +158,9 @@ def load_config_with_path(yaml_path)
   if config[:exclude_paths].nil?
     config[:exclude_paths] = [".git", "Pods"]
   end
+  if config[:history_num].nil?
+    config[:history_num] = 12
+  end
 
   config
 end
