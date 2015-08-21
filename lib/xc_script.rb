@@ -41,14 +41,11 @@ def find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
     project_name == name
   end
 
-  STDERR.puts projects
-
   result = {}
   projects.each do |item|
     path = item[:project_path]
     extname = File.extname(path)
     basename = path.gsub(/#{extname}$/, "")
-    STDERR.puts "extname=#{extname}, basename=#{basename}"
     if extname == ".xcworkspace"
       result[basename] = path
     else
@@ -122,21 +119,20 @@ def open_xcode(project_path)
   `open #{project_path}`
 end
 
-def list_project_names(dir, ignore_files, depth)
+def list_project_names(dir, ignore_files, depth, &block)
 
-  project_paths = list_projects(dir, ignore_files, depth) do 
+  project_paths = list_projects(dir, ignore_files, depth, &block)
 
-  end
   project_names = project_paths.map do |item|
     item[:project_name]
   end
-  project_names
+  project_names.uniq
 end
 
-def list_projects(dir, ignore_files, depth)
+def list_projects(dir, ignore_files, depth, &block)
 
   project_paths = []
-  list_projects_recursively(project_paths, dir, ignore_files + [".", ".."], depth, block)
+  list_projects_recursively(project_paths, dir, ignore_files + [".", ".."], depth, &block)
 
   project_paths
 end
@@ -148,23 +144,28 @@ def list_projects_recursively(project_paths, dir, ignore_files, depth, &block)
 
   child_dirs = []
 
-  project_name = ""
-  project_path = ""
+  is_added_project = false
+
   Dir.foreach(dir) do |file|
     next if ignore_files.include?(file)
 
     current_path = (Pathname(dir) + file).to_s
     extname = File.extname(file)
     if extname == ".xcworkspace" or extname == ".xcodeproj"
+      project_name = File.basename(file, extname)
+      project_path = current_path
 
-      removed = false
-      if block
-        removed = block.call(project_name, project_path)
+      is_take = true
+      if block_given?
+        is_take = block.call(project_name, project_path)
       end
-      
-      if not removed
-        project_name = File.basename(file, extname)
-        project_path = current_path
+
+      if is_take
+        project_paths << {
+          project_name: project_name,
+          project_path: project_path
+        }
+        is_added_project = true
       end
     else
       if File.directory?(current_path)
@@ -173,15 +174,10 @@ def list_projects_recursively(project_paths, dir, ignore_files, depth, &block)
     end
   end
 
-  if project_name.empty?
+  if not is_added_project
     child_dirs.each do |dir|
-      list_projects_recursively(project_paths, dir, ignore_files, depth - 1)
+      list_projects_recursively(project_paths, dir, ignore_files, depth - 1, &block)
     end
-  else
-    project_paths << {
-      project_name: project_name,
-      project_path: project_path
-    }
   end
 end
 
