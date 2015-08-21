@@ -10,6 +10,14 @@ CONFIG_PATH=File.expand_path("../../config", __FILE__)
 
 def resolve_project_path(project_name, search_paths, exclude_paths, search_depth)
 
+  if project_name == "."
+    project_name = list_project_names(".", exclude_paths, 1)[0]
+  end
+
+  if project_name.nil? or project_name.empty?
+    return ""
+  end
+
   project_paths = find_project_paths(project_name, search_paths, exclude_paths, search_depth)
 
   if project_paths.empty?
