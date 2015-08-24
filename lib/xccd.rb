@@ -3,6 +3,7 @@
 $:.unshift File.dirname(__FILE__)
 
 require_relative './xc_script.rb'
+require_relative './xc_config.rb'
 
 def main
   config = load_config

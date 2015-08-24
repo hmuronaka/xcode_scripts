@@ -10,13 +10,13 @@ xccd() {
 }
 
 _xccd() {
-  CURRENT_DIR=`pwd`
+  CURRENT_DIR=`xcconfig search_path`
   PROJECT_NAMES=`xclist ${CURRENT_DIR}`
   COMPREPLY=( `compgen -W "${PROJECT_NAMES}" $2`) 
 }
 
 _xcopen() {
-  CURRENT_DIR=`pwd`
+  CURRENT_DIR=`xcconfig search_path`
   PROJECT_NAMES=`xclist ${CURRENT_DIR}`
   COMPREPLY=( `compgen -W "${PROJECT_NAMES}" $2`) 
 }
