@@ -5,8 +5,8 @@ $:.unshift File.dirname(__FILE__)
 require 'pathname'
 require 'yaml'
 require_relative '../lib/xc_history'
+require_relative '../lib/xc_config'
 
-CONFIG_PATH=File.expand_path("../../config", __FILE__)
 
 def resolve_project_path(project_name, search_paths, exclude_paths, search_depth)
 
@@ -132,7 +132,7 @@ end
 def list_projects(dir, ignore_files, depth, &block)
 
   project_paths = []
-  list_projects_recursively(project_paths, dir, ignore_files + [".", ".."], depth, &block)
+  list_projects_recursively(project_paths, File.expand_path(dir), ignore_files + [".", ".."], depth, &block)
 
   project_paths
 end
@@ -179,32 +179,4 @@ def list_projects_recursively(project_paths, dir, ignore_files, depth, &block)
       list_projects_recursively(project_paths, dir, ignore_files, depth - 1, &block)
     end
   end
-end
-
-def load_config
-  load_config_with_path(CONFIG_PATH)
-end
-
-def load_config_with_path(yaml_path)
-  config = {}
-  begin
-    str = File.read(yaml_path)
-    config = YAML.load(str)
-  rescue => e
-  end
-
-  if config[:search_paths].nil?
-    config[:search_paths] = ["."]
-  end
-  if config[:search_depth].nil?
-    config[:search_depth] = 4
-  end
-  if config[:exclude_paths].nil?
-    config[:exclude_paths] = [".git", "Pods"]
-  end
-  if config[:history_num].nil?
-    config[:history_num] = 12
-  end
-
-  config
 end
