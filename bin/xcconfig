@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+#
+$:.unshift File.dirname(__FILE__)
+
+require 'pathname'
+require_relative '../lib/xc_config'
+
+def main
+
+  config = load_config
+
+  if ARGV.length == 0
+    config.each do |key,value|
+      puts "#{key}: #{value}"
+    end
+  elsif ARGV[0] == "search_path"
+    puts File.expand_path(config[:search_paths][0])
+  else
+    puts config[ARGV[0].to_sym]
+  end
+
+end
+
+main
