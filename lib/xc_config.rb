@@ -8,6 +8,10 @@ def load_config
   load_config_with_path(CONFIG_PATH)
 end
 
+def config_path
+  CONFIG_PATH
+end
+
 def load_config_with_path(yaml_path)
   config = {}
   begin
@@ -31,3 +35,14 @@ def load_config_with_path(yaml_path)
 
   config
 end
+
+def save_config(config)
+  save_config_with_path(config, CONFIG_PATH)
+end
+
+def save_config_with_path(config, path)
+  File.open(path, 'w') do |f|
+    f.write config.to_yaml
+  end
+end
+

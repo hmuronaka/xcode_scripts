@@ -15,10 +15,24 @@ def main
     end
   elsif ARGV[0] == "search_path"
     puts File.expand_path(config[:search_paths][0])
+  elsif ARGV[0] == "--generate"
+    generate_config_file
   else
     puts config[ARGV[0].to_sym]
   end
+end
 
+def generate_config_file
+
+  if File.exists?(config_path)
+    STDERR.puts "The config file already exists."
+    return 
+  end
+
+  config = load_config
+  save_config(config)
+
+  puts "The config file geneated to #{config_path}."
 end
 
 main
