@@ -4,7 +4,7 @@ WORK_DIR=~/.xcode_scripts
 LIB_DIR=${WORK_DIR}/lib
 export PATH=$PATH:~/.xcode_scripts/bin
 
-alias xo='xopen'
+alias xo='xcopen'
 alias xc='xccd'
 
 xccd() {
