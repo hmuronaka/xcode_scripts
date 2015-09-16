@@ -41,21 +41,28 @@ def find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
     project_name == name
   end
 
+  result = prior_xcworkspace(projects).map do |item|
+    item[:project_path]
+  end
+  result
+end
+
+def prior_xcworkspace(projects)
   result = {}
   projects.each do |item|
     path = item[:project_path]
     extname = File.extname(path)
     basename = path.gsub(/#{extname}$/, "")
     if extname == ".xcworkspace"
-      result[basename] = path
+      result[basename] = item
     else
-      result[basename] ||= path
+      result[basename] ||= item
     end
   end
 
   result.values
-
 end
+
 
 def find_project_paths(project_name, search_paths, exclude_paths, search_depth)
 
