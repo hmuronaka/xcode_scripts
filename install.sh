@@ -25,11 +25,11 @@ for f in xcode_script.bash; do
   cp ${CURRENT_DIR}/${f} ${INSTALL_DIR}/
 done
 
-for f in xcopen xclist xcconfig; do
+for f in xcopen xclist xcconfig xccache; do
   cp ${CURRENT_DIR}/bin/${f} ${INSTALL_DIR}/bin/
 done
 
-for f in xc_script.rb xccd.rb xc_history.rb xc_config.rb; do
+for f in xc_script.rb xccd.rb xc_history.rb xc_config.rb xccache_file.rb; do
   cp ${CURRENT_DIR}/lib/${f} ${INSTALL_DIR}/lib/
 done
 

@@ -5,6 +5,7 @@ $:.unshift File.dirname(__FILE__)
 require 'pathname'
 require_relative '../lib/xc_script.rb'
 require_relative '../lib/xc_config.rb'
+require_relative '../lib/xccache_file.rb'
 
 def main
   config = load_config
@@ -19,7 +20,7 @@ def main
   exit(1) if projects.empty?
 
   projects = prior_xcworkspace(projects)
-  put_file(projects)
+  save_cache(projects)
 end
 
 def parse_args(argv, config)
@@ -40,10 +41,6 @@ def usage(error_sym)
     puts "Option:"
     puts "\tdepth:depth of directory-search-recursively. default is #{PARAMS[:depth]}"
   end
-end
-
-def put_file(projects)
-  puts project_names.join("\n")
 end
 
 main
