@@ -6,12 +6,13 @@ require 'pathname'
 require 'yaml'
 require_relative '../lib/xc_history'
 require_relative '../lib/xc_config'
+require_relative '../lib/xccache_file'
 
 
-def resolve_project_path(project_name, search_paths, exclude_paths, search_depth)
+def resolve_project_path(project_name, search_paths, exclude_paths, search_depth, option = {})
 
   if project_name == "."
-    project_name = list_project_names(".", exclude_paths, 1)[0]
+    project_name = list_project_names(".", exclude_paths, 1, option)[0]
   end
 
   if project_name.nil? or project_name.empty?
@@ -126,8 +127,10 @@ def open_xcode(project_path)
   `open #{project_path}`
 end
 
-def list_project_names(dir, ignore_files, depth, &block)
+def list_project_names(dir, ignore_files, depth, option = {}, &block)
 
+  if option[:use_cache]
+    project_paths = 
   project_paths = list_projects(dir, ignore_files, depth, &block)
 
   project_names = project_paths.map do |item|
