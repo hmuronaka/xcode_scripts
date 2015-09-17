@@ -11,26 +11,35 @@ require_relative '../lib/xccache_file'
 
 def resolve_project_path(project_name, search_paths, exclude_paths, search_depth, option = {})
 
-  if project_name == "."
-    project_name = list_project_names(".", exclude_paths, 1, option)[0]
-  end
-
-  if project_name.nil? or project_name.empty?
-    return ""
-  end
-
-  project_paths = find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
-
-  if project_paths.empty?
-    STDERR.puts "#{project_name} is not found!!"
-    return ""
-  end
-
   project_path = ""
-  if project_paths.length == 1
-    project_path = project_paths[0]
+
+  if project_name == "."
+    projects = list_projects(Dir.pwd, exclude_paths, 1)
+    projects = prior_xcworkspace(projects)
+    if projects.empty?
+      STDERR.puts "project is not found!!"
+      return ""
+    end
+
+    project_path = projects[0][:project_path]
   else
-    project_path = ask_project_path(project_name, project_paths)
+    if project_name.nil? or project_name.empty?
+      return ""
+    end
+
+    project_paths = find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
+
+    if project_paths.empty?
+      STDERR.puts "#{project_name} is not found!!"
+      return ""
+    end
+
+    project_path = ""
+    if project_paths.length == 1
+      project_path = project_paths[0]
+    else
+      project_path = ask_project_path(project_name, project_paths)
+    end
   end
 
   File.expand_path(project_path, search_paths[0])
@@ -129,12 +138,7 @@ end
 
 def list_project_names(dir, ignore_files, depth, option = {}, &block)
 
-  project_paths = {}
-  if option[:use_cache]
-    project_paths = load_cache
-  else
-    project_paths = list_projects(dir, ignore_files, depth, &block)
-  end
+  project_paths = list_projects(dir, ignore_files, depth, option, &block)
 
   project_names = project_paths.map do |item|
     item[:project_name]
@@ -142,10 +146,14 @@ def list_project_names(dir, ignore_files, depth, option = {}, &block)
   project_names.uniq
 end
 
-def list_projects(dir, ignore_files, depth, &block)
+def list_projects(dir, ignore_files, depth, option = {}, &block)
 
   project_paths = []
-  list_projects_recursively(project_paths, File.expand_path(dir), ignore_files + [".", ".."], depth, &block)
+  if option[:use_cache]
+    project_paths = load_cache
+  else
+    list_projects_recursively(project_paths, File.expand_path(dir), ignore_files + [".", ".."], depth, &block)
+  end
 
   project_paths
 end
