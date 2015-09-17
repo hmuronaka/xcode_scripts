@@ -14,7 +14,8 @@ def main
   project_names = list_project_names(
     config[:search_path],
     config[:exclude_paths],
-    config[:search_depth]
+    config[:search_depth],
+    use_cache: true,
   )
 
   exit(1) if project_names.empty?

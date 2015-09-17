@@ -129,9 +129,12 @@ end
 
 def list_project_names(dir, ignore_files, depth, option = {}, &block)
 
+  project_paths = {}
   if option[:use_cache]
-    project_paths = 
-  project_paths = list_projects(dir, ignore_files, depth, &block)
+    project_paths = load_cache
+  else
+    project_paths = list_projects(dir, ignore_files, depth, &block)
+  end
 
   project_names = project_paths.map do |item|
     item[:project_name]

@@ -22,7 +22,9 @@ def main
       config[:project_name],
       config[:search_paths],
       config[:exclude_paths],
-      config[:search_depth])
+      config[:search_depth],
+      use_cache: true
+    )
     project_name = config[:project_name]
   end
 
