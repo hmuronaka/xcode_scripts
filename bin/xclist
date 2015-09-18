@@ -15,7 +15,7 @@ def main
     config[:search_path],
     config[:exclude_paths],
     config[:search_depth],
-    use_cache: true,
+    config # option
   )
 
   exit(1) if project_names.empty?
@@ -29,17 +29,41 @@ def parse_args(argv, config)
     return false
   end
 
-  config[:search_path] = argv[0]
-  return true
+  arg = argv.shift
+
+  if arg == "--use-cache"
+    config[:use_cache] = true
+    arg = argv.shift
+  end
+
+  if arg
+    config[:search_path] = arg
+    arg = argv.shift
+
+    if arg.to_i
+      config[:search_depth] = arg.to_i
+    end
+    return true
+  else
+    usage(:illegal_arguments)
+    return false
+  end
+
 end
 
 def usage(error_sym)
   case error_sym
   when :illegal_arguments
-    puts "Usage: xclist <search-path> <depth>"
-    puts ""
-    puts "Option:"
-    puts "\tdepth:depth of directory-search-recursively. default is #{PARAMS[:depth]}"
+    STDERR.puts <<EOS
+Usage: xclist <--use-cache> search-path <depth>
+
+Required:
+  search-path: Search path. 
+
+Option:
+  --use-cache: Use cache for searching project paths.
+  depth: Number of depth of directory-search-recursively.
+EOS
   end
 end
 

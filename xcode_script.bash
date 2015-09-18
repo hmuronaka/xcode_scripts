@@ -8,8 +8,13 @@ alias xo='xcopen'
 alias xc='xccd'
 
 xccd() {
+  # sed -n $p: print last line.
   PROJECT_PATH=`${LIB_DIR}/xccd.rb $1 | sed -n '$p'`
-  pushd ${PROJECT_PATH}
+
+  # PROJECT_PATH.length > 0 
+  if [ -n "${PROJECT_PATH}" ]; then
+    pushd ${PROJECT_PATH}
+  fi
 }
 
 _xccd() {

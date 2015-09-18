@@ -56,6 +56,9 @@ def parse_args(argv, config)
   if arg == "--use-cache"
     config[:use_cache] = true
     arg = argv.shift
+  elsif arg == "--help"
+    usage(:help)
+    return false
   end
 
   if arg
@@ -69,12 +72,16 @@ end
 
 def usage(error_sym)
   case error_sym
-  when :illegal_arguments
-    puts "Usage: xcopen <--use-cache> <projectname>"
-    puts ""
-    puts "Options:"
-    puts "\t--use-cache: use cache for project paths."
-    puts "\tprojectname: xcode project name or project name with extension. like MyProject, MyProject.xcworkspace"
+  when :illegal_arguments, :help
+    STDERR.puts <<EOS
+Usage: xcopen <--use-cache> projectname
+  or
+xcopen
+
+Options:
+  --use-cache: optional: Use cache for searching project paths.
+  projectname: required: Xcode project name or project name with extension, like MyProject or MyProject.xcworkspace
+EOS
   end
 end
 

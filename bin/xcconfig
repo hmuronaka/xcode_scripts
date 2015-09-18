@@ -9,16 +9,16 @@ def usage
   STDERR.puts <<EOF
 xcconfig prints configure for xcode_scripts
 
-usage: xcconfig {command} or parameter's name.
+Usage: xcconfig {command} or parameter's name.
 
-command:
-    search_path: print search_path's value for xcode projects.
+Command:
+    search_path: Print search_path's value for xcode projects.
 
-    --generate: generate a config file to ~/.xc_config.
+    --generate: Generate a config file to ~/.xc_config.
 
-    --usage: this text.
+    --usage: This text.
 
-    parameter's name: print it's value.
+    parameter's name: Print it's value.
 EOF
 end
 
@@ -34,7 +34,7 @@ def main
     puts File.expand_path(config[:search_paths][0])
   elsif ARGV[0] == "--generate"
     generate_config_file
-  elsif ARGV[0] == "--usage"
+  elsif ARGV[0] == "--help"
     usage
   else
     puts config[ARGV[0].to_sym]

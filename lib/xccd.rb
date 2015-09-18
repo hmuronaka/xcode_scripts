@@ -23,7 +23,7 @@ def main
       config[:search_paths],
       config[:exclude_paths],
       config[:search_depth],
-      use_cache: true
+      config
     )
     project_name = config[:project_name]
   end
@@ -46,8 +46,22 @@ def parse_args(argv, config)
   if argv.length == 0
     config[:project_name] = nil
     return true
-  elsif argv.length == 1
-    config[:project_name] = argv[0]
+  end
+
+  arg = argv.shift
+
+  if arg == "--help"
+    usage :help
+    return
+  end
+
+  if arg == "--use-cache"
+    config[:use_cache] = true
+    arg = argv.shift
+  end
+
+  if arg
+    config[:project_name] = arg
     return true
   else
     usage(:illegal_arguments)
@@ -57,11 +71,15 @@ end
 
 def usage(error_sym)
   case error_sym
-  when :illegal_arguments
-    STDERR.puts "Usage: xccd <projectname>"
-    STDERR.puts ""
-    STDERR.puts "Options:"
-    STDERR.puts "\tprojectname: xcode project name or project name with extension. like MyProject, MyProject.xcworkspace"
+  when :help, :illegal_arguments
+    STDERR.puts <<EOS
+Usage: xccd <projectname>
+  or
+xccd
+
+Options:
+  projectname: Xcode project name or project name with extension. like MyProject, MyProject.xcworkspace
+EOS
   end
 end
 
