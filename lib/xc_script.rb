@@ -153,6 +153,8 @@ def list_projects(dir, ignore_files, depth, option = {}, &block)
     project_paths = load_cache.select do |project|
       if block_given?
         block.call(project[:project_name], project[:project_path])
+      else
+        true
       end
     end
   else
