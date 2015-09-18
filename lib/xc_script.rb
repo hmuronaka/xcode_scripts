@@ -14,7 +14,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
   project_path = ""
 
   if project_name == "."
-    projects = list_projects(Dir.pwd, exclude_paths, 1)
+    projects = list_projects(Dir.pwd, exclude_paths, 1, option)
     projects = prior_xcworkspace(projects)
     if projects.empty?
       STDERR.puts "project is not found!!"
@@ -27,7 +27,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
       return ""
     end
 
-    project_paths = find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
+    project_paths = find_project_paths2(project_name, search_paths, exclude_paths, search_depth, option)
 
     if project_paths.empty?
       STDERR.puts "#{project_name} is not found!!"
@@ -45,9 +45,9 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
   File.expand_path(project_path, search_paths[0])
 end
 
-def find_project_paths2(project_name, search_paths, exclude_paths, search_depth)
+def find_project_paths2(project_name, search_paths, exclude_paths, search_depth, option = {})
 
-  projects = list_projects(search_paths[0], exclude_paths, search_depth) do |name, path|
+  projects = list_projects(search_paths[0], exclude_paths, search_depth, option) do |name, path|
     project_name == name
   end
 
@@ -150,7 +150,11 @@ def list_projects(dir, ignore_files, depth, option = {}, &block)
 
   project_paths = []
   if option[:use_cache]
-    project_paths = load_cache
+    project_paths = load_cache.select do |project|
+      if block_given?
+        block.call(project[:project_name], project[:project_path])
+      end
+    end
   else
     list_projects_recursively(project_paths, File.expand_path(dir), ignore_files + [".", ".."], depth, &block)
   end
