@@ -5,22 +5,22 @@ $:.unshift File.dirname(__FILE__)
 require 'pathname'
 require_relative '../lib/xc_script.rb'
 require_relative '../lib/xc_config.rb'
+require_relative '../lib/xcindex_file.rb'
 
 def main
   config = load_config
 
   exit(1) unless parse_args(ARGV, config)
-  puts config
 
-  project_names = list_project_names(
+  projects = list_projects(
     config[:search_path],
     config[:exclude_paths],
     config[:search_depth]
   )
+  exit(1) if projects.empty?
 
-  exit(1) if project_names.empty?
-
-  puts_project_names(project_names)
+  projects = prior_xcworkspace(projects)
+  save_project_index(projects)
 end
 
 def parse_args(argv, config)
@@ -34,7 +34,6 @@ def parse_args(argv, config)
   if arg
     config[:search_path] = arg
     arg = argv.shift
-
     if arg && arg.to_i
       config[:search_depth] = arg.to_i
     end
@@ -43,26 +42,20 @@ def parse_args(argv, config)
     usage(:illegal_arguments)
     return false
   end
-
 end
 
 def usage(error_sym)
   case error_sym
   when :illegal_arguments
     STDERR.puts <<EOS
-Usage: xclist search-path <depth>
-
-Required:
-  search-path: Search path. 
+Usage: xcindex search-path <depth>
 
 Option:
+  search-path: Search path for making a project_index.
   depth: Number of depth of directory-search-recursively.
 EOS
   end
 end
 
-def puts_project_names(project_names)
-  puts project_names.join("\n")
-end
-
 main
+

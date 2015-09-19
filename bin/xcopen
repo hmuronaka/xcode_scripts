@@ -12,7 +12,6 @@ def main
 
   exit(1) unless parse_args(ARGV, config)
 
-
   project_path = ""
   project_name = ""
   if config[:project_name].nil?
@@ -25,7 +24,8 @@ def main
       config[:project_name],
       config[:search_paths],
       config[:exclude_paths],
-      config[:search_depth])
+      config[:search_depth],
+    )
     project_name = config[:project_name]
   end
 
@@ -48,8 +48,17 @@ def parse_args(argv, config)
   if argv.length == 0
     config[:project_name] = nil
     return true
-  elsif argv.length == 1
-    config[:project_name] = argv[0]
+  end
+
+  arg = argv.shift
+
+  if arg == "--help"
+    usage(:help)
+    return false
+  end
+
+  if arg
+    config[:project_name] = arg
     return true
   else
     usage(:illegal_arguments)
@@ -59,11 +68,15 @@ end
 
 def usage(error_sym)
   case error_sym
-  when :illegal_arguments
-    puts "Usage: xcopen <projectname>"
-    puts ""
-    puts "Options:"
-    puts "\tprojectname: xcode project name or project name with extension. like MyProject, MyProject.xcworkspace"
+  when :illegal_arguments, :help
+    STDERR.puts <<EOS
+Usage: xcopen projectname
+  or
+xcopen
+
+Options:
+  projectname: required: Xcode project name or project name with extension, like MyProject or MyProject.xcworkspace
+EOS
   end
 end
 
