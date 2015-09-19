@@ -53,8 +53,8 @@ def parse_args(argv, config)
 
   arg = argv.shift
 
-  if arg == "--use-cache"
-    config[:use_cache] = true
+  if arg == "--use-index"
+    config[:use_index] = true
     arg = argv.shift
   elsif arg == "--help"
     usage(:help)
@@ -74,12 +74,12 @@ def usage(error_sym)
   case error_sym
   when :illegal_arguments, :help
     STDERR.puts <<EOS
-Usage: xcopen <--use-cache> projectname
+Usage: xcopen <--use-index> projectname
   or
 xcopen
 
 Options:
-  --use-cache: optional: Use cache for searching project paths.
+  --use-index: optional: Use index for searching project paths.
   projectname: required: Xcode project name or project name with extension, like MyProject or MyProject.xcworkspace
 EOS
   end

@@ -32,8 +32,8 @@ def load_config_with_path(yaml_path)
   if config[:history_num].nil?
     config[:history_num] = 12
   end
-  if config[:use_cache].nil?
-    config[:use_cache] = false
+  if config[:use_index].nil?
+    config[:use_index] = false
   end
 
   config

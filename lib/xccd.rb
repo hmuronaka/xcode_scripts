@@ -55,8 +55,8 @@ def parse_args(argv, config)
     return
   end
 
-  if arg == "--use-cache"
-    config[:use_cache] = true
+  if arg == "--use-index"
+    config[:use_index] = true
     arg = argv.shift
   end
 

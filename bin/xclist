@@ -10,6 +10,7 @@ def main
   config = load_config
 
   exit(1) unless parse_args(ARGV, config)
+  puts config
 
   project_names = list_project_names(
     config[:search_path],
@@ -31,8 +32,8 @@ def parse_args(argv, config)
 
   arg = argv.shift
 
-  if arg == "--use-cache"
-    config[:use_cache] = true
+  if arg == "--use-index"
+    config[:use_index] = true
     arg = argv.shift
   end
 
@@ -40,7 +41,7 @@ def parse_args(argv, config)
     config[:search_path] = arg
     arg = argv.shift
 
-    if arg.to_i
+    if arg && arg.to_i
       config[:search_depth] = arg.to_i
     end
     return true
@@ -55,13 +56,13 @@ def usage(error_sym)
   case error_sym
   when :illegal_arguments
     STDERR.puts <<EOS
-Usage: xclist <--use-cache> search-path <depth>
+Usage: xclist <--use-index> search-path <depth>
 
 Required:
   search-path: Search path. 
 
 Option:
-  --use-cache: Use cache for searching project paths.
+  --use-index: Use cache for searching project paths.
   depth: Number of depth of directory-search-recursively.
 EOS
   end

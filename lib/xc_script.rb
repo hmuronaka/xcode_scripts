@@ -6,7 +6,7 @@ require 'pathname'
 require 'yaml'
 require_relative '../lib/xc_history'
 require_relative '../lib/xc_config'
-require_relative '../lib/xccache_file'
+require_relative '../lib/xcindex_file'
 
 
 def resolve_project_path(project_name, search_paths, exclude_paths, search_depth, option = {})
@@ -149,8 +149,8 @@ end
 def list_projects(dir, ignore_files, depth, option = {}, &block)
 
   project_paths = []
-  if option[:use_cache]
-    project_paths = load_cache.select do |project|
+  if option[:use_index]
+    project_paths = load_project_index.select do |project|
       if block_given?
         block.call(project[:project_name], project[:project_path])
       else
