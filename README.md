@@ -3,7 +3,7 @@
 This contains some scripts for Xcode. If you have many Xcode projctes and you are often changing directory for moving Xcode project, you'll be happy.
 
 ## xcopen
-open a xcode project easily.
+Open a xcode project easily.
 
 ```sh
 # SampleProject is in ~/src/xcode_projects/sampleproject/SampleProject.xcworkspace
@@ -12,7 +12,7 @@ xcopen SampleProject # xcopen search a xcworkspace or xcproject directory recurs
 
 xcopen SampleProject.xcworkspace # open specific xcworkspace or xcproject.
 
-# if multiple same name project is found, can select a project.
+# If multiple same name project is found, can select a project.
 
 xcopen TestProject
 0: xcode_projects/testproject/TestProject.xcworkspace
@@ -29,7 +29,7 @@ xcopen records history opening the project's path to ~/.xc_history
 
 ## xccd
 
-change directory of xcode project.
+Change directory of xcode project.
 
 ```sh
 xccd SampleProject # move a dictionary of SampleProject. xccd use pushd, not cd. 
@@ -47,9 +47,9 @@ Print Xcode projects in search directories
 xclist ~/src 10 # 10 is depth of search-recursively
 ```
 
-## xccache
+## xcindex
 
-Make cache for xcopen, xccd, xclist
+Make index file for xcopen, xccd, xclist
 
 
 ```sh
