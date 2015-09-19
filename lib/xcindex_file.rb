@@ -4,6 +4,10 @@ require 'yaml'
 
 PROJECT_INDEX_PATH=File.expand_path("~/.xcindex", __FILE__)
 
+def is_exists_project_index?
+  File.exist?(PROJECT_INDEX_PATH)
+end
+
 def load_project_index
   load_project_index_with_path(PROJECT_INDEX_PATH)
 end

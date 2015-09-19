@@ -149,7 +149,7 @@ end
 def list_projects(dir, ignore_files, depth, option = {}, &block)
 
   project_paths = []
-  if option[:use_index]
+  if is_exists_project_index?
     project_paths = load_project_index.select do |project|
       if block_given?
         block.call(project[:project_name], project[:project_path])

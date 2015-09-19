@@ -23,7 +23,6 @@ def main
       config[:search_paths],
       config[:exclude_paths],
       config[:search_depth],
-      config
     )
     project_name = config[:project_name]
   end
@@ -53,11 +52,6 @@ def parse_args(argv, config)
   if arg == "--help"
     usage :help
     return
-  end
-
-  if arg == "--use-index"
-    config[:use_index] = true
-    arg = argv.shift
   end
 
   if arg

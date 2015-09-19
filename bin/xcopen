@@ -25,7 +25,6 @@ def main
       config[:search_paths],
       config[:exclude_paths],
       config[:search_depth],
-      config
     )
     project_name = config[:project_name]
   end
@@ -53,10 +52,7 @@ def parse_args(argv, config)
 
   arg = argv.shift
 
-  if arg == "--use-index"
-    config[:use_index] = true
-    arg = argv.shift
-  elsif arg == "--help"
+  if arg == "--help"
     usage(:help)
     return false
   end
@@ -74,12 +70,11 @@ def usage(error_sym)
   case error_sym
   when :illegal_arguments, :help
     STDERR.puts <<EOS
-Usage: xcopen <--use-index> projectname
+Usage: xcopen projectname
   or
 xcopen
 
 Options:
-  --use-index: optional: Use index for searching project paths.
   projectname: required: Xcode project name or project name with extension, like MyProject or MyProject.xcworkspace
 EOS
   end

@@ -15,8 +15,7 @@ def main
   projects = list_projects(
     config[:search_path],
     config[:exclude_paths],
-    config[:search_depth],
-    use_index: false
+    config[:search_depth]
   )
   exit(1) if projects.empty?
 
