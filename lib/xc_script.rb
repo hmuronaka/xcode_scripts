@@ -14,7 +14,7 @@ def resolve_project_path(project_name, search_paths, exclude_paths, search_depth
   project_path = ""
 
   if project_name == "."
-    projects = list_projects(Dir.pwd, exclude_paths, 1, option)
+    projects = list_projects(Dir.pwd, exclude_paths, 1, use_index: false) 
     projects = prior_xcworkspace(projects)
     if projects.empty?
       STDERR.puts "project is not found!!"
@@ -149,12 +149,12 @@ end
 def list_projects(dir, ignore_files, depth, option = {}, &block)
 
   project_paths = []
-  if is_exists_project_index?
+  if is_enable_index?(option)
     project_paths = load_project_index.select do |project|
       if block_given?
-        block.call(project[:project_name], project[:project_path])
+        next block.call(project[:project_name], project[:project_path])
       else
-        true
+        next true
       end
     end
   else
@@ -162,6 +162,16 @@ def list_projects(dir, ignore_files, depth, option = {}, &block)
   end
 
   project_paths
+end
+
+def is_enable_index?(option = {})
+
+  result = true
+  if option.has_key?(:use_index)
+    result = option[:use_index]
+  end
+
+  return result && is_exists_project_index?
 end
 
 def list_projects_recursively(project_paths, dir, ignore_files, depth, &block)
