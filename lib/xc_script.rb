@@ -47,8 +47,9 @@ end
 
 def find_project_paths2(project_name, search_paths, exclude_paths, search_depth, option = {})
 
+  downcase_project_name = project_name.downcase
   projects = list_projects(search_paths[0], exclude_paths, search_depth, option) do |name, path|
-    project_name == name
+    downcase_project_name == name.downcase
   end
 
   result = prior_xcworkspace(projects).map do |item|
