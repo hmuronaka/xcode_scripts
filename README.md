@@ -53,7 +53,7 @@ Make index file for xcopen, xccd, xclist
 
 
 ```sh
-xccache ~/src 10 # 10 is depth of search-recursively
+xcindex ~/src 10 # 10 is depth of search-recursively
 ```
 
 # Install
