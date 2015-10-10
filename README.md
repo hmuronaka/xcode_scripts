@@ -5,6 +5,8 @@ This contains some scripts for Xcode. If you have many Xcode projctes and you ar
 ## xcopen
 Open a xcode project easily.
 
+![xo.gif](docs/images/xo.gif)
+
 ```sh
 # SampleProject is in ~/src/xcode_projects/sampleproject/SampleProject.xcworkspace
 cd ~/src
@@ -30,6 +32,8 @@ xcopen records history opening the project's path to ~/.xc_history
 ## xccd
 
 Change directory of xcode project.
+
+![xc.gif](docs/images/xc.gif)
 
 ```sh
 xccd SampleProject # move a dictionary of SampleProject. xccd use pushd, not cd. 
