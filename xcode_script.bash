@@ -13,7 +13,7 @@ xccd() {
 
   # PROJECT_PATH.length > 0 
   if [ -n "${PROJECT_PATH}" ]; then
-    pushd ${PROJECT_PATH}
+    pushd "${PROJECT_PATH}"
   fi
 }
 

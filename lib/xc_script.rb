@@ -134,7 +134,7 @@ def ask_project_path(project_name, project_paths)
 end
 
 def open_xcode(project_path)
-  `open #{project_path}`
+  `open "#{project_path}"`
 end
 
 def list_project_names(dir, ignore_files, depth, option = {}, &block)
